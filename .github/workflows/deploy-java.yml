@@ -77,6 +77,22 @@ jobs:
     # --------------------------------------------------
     # ② 自動テストの実行 (CI 前半)
     # --------------------------------------------------
+    # --------------------------------------------------
+    # ECRログイン
+    # --------------------------------------------------
+    - name: Login to Amazon ECR
+      run: |
+        echo "Logging in to Amazon ECR..."
+
+        aws ecr get-login-password --region ${REGION} | \
+        docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com
+
+        echo "ECR login successful."
+
+    # --------------------------------------------------
+    # テスト用のイメージ作成
+    # --------------------------------------------------
+
     # ここでテストを走らせます。失敗すればここでジョブが止まります。      
     - name: Build Test Image
       run: |
@@ -90,27 +106,17 @@ jobs:
           -t spring-test:latest \
           ./app
 
+    # --------------------------------------------------
+    # テストの実行
+    # --------------------------------------------------
     - name: Run Tests
       run: |
         #テストの実行
         docker run --rm spring-test:latest ./mvnw test -e
 
-
-
     # --------------------------------------------------
     # ③ Dockerイメージのビルド(CI 後半)
     # --------------------------------------------------
-    # --------------------------------------------------
-    # ECRログイン
-    # --------------------------------------------------
-    - name: Login to Amazon ECR
-      run: |
-        echo "Logging in to Amazon ECR..."
-
-        aws ecr get-login-password --region ${REGION} | \
-        docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com
-
-        echo "ECR login successful."
 
     # --------------------------------------------------
     # Dockerイメージビルド
