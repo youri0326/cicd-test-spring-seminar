@@ -1,0 +1,45 @@
+{
+  "applicationName": "cicd-aws-codedeploy-java-yoshiike-0702",
+  "deploymentGroupName": "cicd-aws-codedeploy-java-group",
+  "serviceRoleArn": "arn:aws:iam::527151769671:role/CodeDeployServiceRole-yoshiike-0702",
+  "deploymentStyle": {
+    "deploymentType": "BLUE_GREEN",
+    "deploymentOption": "WITH_TRAFFIC_CONTROL"
+  },
+  "blueGreenDeploymentConfiguration": {
+    "terminateBlueInstancesOnDeploymentSuccess": {
+      "action": "TERMINATE",
+      "terminationWaitTimeInMinutes": 1
+    },
+    "deploymentReadyOption": {
+      "actionOnTimeout": "CONTINUE_DEPLOYMENT",
+      "waitTimeInMinutes": 0
+    }
+  },  
+  "ecsServices": [
+    {
+      "clusterName": "ecs-cluster-yoshiike-0702",
+      "serviceName": "java-service-yoshiike-0702"
+    }
+  ],
+  "loadBalancerInfo": {
+    "targetGroupPairInfoList": [
+      {
+        "prodTrafficRoute": {
+          "listenerArns": [
+            "arn:aws:elasticloadbalancing:ap-northeast-1:527151769671:listener/app/alb-yoshiike-0702/4e188e156313c4c3/7d4a96ed142a2681"
+          ]
+        },
+        "testTrafficRoute": {
+          "listenerArns": [
+            "arn:aws:elasticloadbalancing:ap-northeast-1:527151769671:listener/app/alb-yoshiike-0702/4e188e156313c4c3/5bb61d5408db07b8"
+          ]
+        },
+        "targetGroups": [
+          { "name": "java-blue-tg-yoshiike-0702" },
+          { "name": "java-green-tg-yoshiike-0702" }
+        ]
+      }
+    ]
+  }
+}
