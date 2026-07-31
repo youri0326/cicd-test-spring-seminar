@@ -68,7 +68,22 @@ jobs:
       with:
         script: |
           const token = await core.getIDToken("sts.amazonaws.com");
-          console.log(token.substring(0,30));          
+          console.log(token.substring(0,30));
+
+    - name: Decode OIDC token
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const core = require('@actions/core');
+
+          const token = await core.getIDToken("sts.amazonaws.com");
+
+          const payload = JSON.parse(
+            Buffer.from(token.split('.')[1], 'base64').toString()
+          );
+
+          console.log(payload);
+
     # --------------------------------------------------
     # AWS認証 (OIDC方式)
     # --------------------------------------------------
