@@ -56,32 +56,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
 
-    - name: Debug GitHub Context
-      run: |
-        echo "Repository = ${{ github.repository }}"
-        echo "Ref = ${{ github.ref }}"
-    - name: Show Role
-      run: |
-        echo "${{ env.AWS_ROLE_ARN }}"
-    - name: Request OIDC Token
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const token = await core.getIDToken("sts.amazonaws.com");
-          console.log(token.substring(0,30));
-
-    - name: Decode OIDC token
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const token = await core.getIDToken("sts.amazonaws.com");
-
-          const payload = JSON.parse(
-            Buffer.from(token.split('.')[1], 'base64').toString('utf8')
-          );
-
-          console.log(JSON.stringify(payload, null, 2));
-
     # --------------------------------------------------
     # AWS認証 (OIDC方式)
     # --------------------------------------------------
