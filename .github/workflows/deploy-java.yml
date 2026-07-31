@@ -60,6 +60,15 @@ jobs:
       run: |
         echo "Repository = ${{ github.repository }}"
         echo "Ref = ${{ github.ref }}"
+    - name: Show Role
+      run: |
+        echo "${{ env.AWS_ROLE_ARN }}"
+    - name: Request OIDC Token
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const token = await core.getIDToken("sts.amazonaws.com");
+          console.log(token.substring(0,30));          
     # --------------------------------------------------
     # AWS認証 (OIDC方式)
     # --------------------------------------------------
